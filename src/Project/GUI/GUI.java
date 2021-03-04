@@ -117,11 +117,12 @@ public class GUI {
 
         try {
 
-            cliente = new Socket(ipServidor, 2019);
+            cliente = new Socket(ipServidor, 55000);
             //asignamos este numero de puerto
             //entrada = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
             // será lo que enviaremos al servidor
             //salida = new DataOutputStream(cliente.getOutputStream());
+            entrada = new ObjectInputStream(cliente.getInputStream());
             salida = new ObjectOutputStream(cliente.getOutputStream());
             // será lo que nos devuelva el servidor
 
@@ -211,11 +212,12 @@ public class GUI {
 
         try {
 
-            cliente = new Socket(ipServidor, 2019);
+            cliente = new Socket(ipServidor, 55000);
             //asignamos este numero de puerto
             //entrada = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
             // será lo que enviaremos al servidor
             //salida = new DataOutputStream(cliente.getOutputStream());
+            entrada = new ObjectInputStream(cliente.getInputStream());
             salida = new ObjectOutputStream(cliente.getOutputStream());
             // será lo que nos devuelva el servidor
 
