@@ -168,6 +168,92 @@ public class GUI {
 
 
     private static void opt2() {
+        Scanner sc = new Scanner(System.in);
+        Socket cliente = null;
+        ObjectInputStream entrada = null;
+        ObjectOutputStream salida = null;
+        String ipServidor = "localhost";
+        boolean valid = false;
+        boolean updated = false;
+        String yesorno = "";
+        int id_chamber = -1;
+        boolean v_puerta = false;
+        while (id_chamber <= 0) {
+            System.out.println("Introduce la Id del Chamber");
+            id_chamber = sc.nextInt();
+        }
+
+        do {
+            try {
+                System.out.println("Introduce el valor del Sensor de la puerta");
+                v_puerta = sc.nextBoolean();
+                valid = true;
+
+
+                do {
+                    System.out.println("¿Quieres cambiar otra vez el valor del sensor de la puerta?");
+                    System.out.println("----------------------------------------");
+                    System.out.println("Pulse Y para cambiar el valor del sensor");
+                    System.out.println("Cualquier otra letra/numero para no cambiar el valor del sensor");
+                    yesorno = sc.next();
+
+
+                } while (yesorno == "y");
+
+
+            } catch (InputMismatchException e) {
+                sc = new Scanner(System.in);
+                e.printStackTrace();
+                System.out.println("¡Cuidado! Solo puedes insertar números.");
+            }
+        } while (valid == false);
+
+
+        try {
+
+            cliente = new Socket(ipServidor, 2019);
+            //asignamos este numero de puerto
+            //entrada = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
+            // será lo que enviaremos al servidor
+            //salida = new DataOutputStream(cliente.getOutputStream());
+            salida = new ObjectOutputStream(cliente.getOutputStream());
+            // será lo que nos devuelva el servidor
+
+        } catch (UnknownHostException excepcion) {
+            excepcion.printStackTrace();
+            System.err.println("El servidor no está levantado");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Error: " + e);
+
+        }
+
+        try {
+            salida.writeObject(ClientType.Puerta);
+            salida.flush();
+            salida.writeInt(id_chamber);
+            salida.flush();
+            salida.writeBoolean(v_puerta);
+            salida.flush();
+            updated = entrada.readBoolean();
+
+
+            salida.close();
+            entrada.close();
+            cliente.close();
+
+            if (updated) {
+                System.out.println("Se ha actualizado correctamente");
+            } else {
+                System.out.println("No se ha podido actualizar correctamente");
+            }
+        } catch (UnknownHostException excepcion) {
+            System.err.println("No encuentro el servidor en la dirección" + ipServidor);
+        } catch (IOException excepcion) {
+            System.err.println("Error de entrada/salida");
+        } catch (Exception e) {
+            System.err.println("Error: " + e);
+        }
     }
 
 
