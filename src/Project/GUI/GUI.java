@@ -48,6 +48,7 @@ public class GUI {
                 }
 
             } catch (InputMismatchException e) {
+                sc=new Scanner(System.in);
                 System.out.println("¡Cuidado! Solo puedes insertar números.");
                 sc.next();
             }
@@ -78,7 +79,8 @@ public class GUI {
                 System.out.println("1.Sensor 1");
                 System.out.println("2.Sensor 2");
                 n_sensor = sc.nextInt();
-            } catch (Exception e) {
+            } catch (InputMismatchException e) {
+                sc=new Scanner(System.in);
                 System.out.println("¡Cuidado! Solo puedes insertar números.");
             }
         } while (n_sensor < 0 && n_sensor < 2);
@@ -101,7 +103,8 @@ public class GUI {
                 }while(yesorno=="y");
 
 
-            } catch (Exception e) {
+            } catch (InputMismatchException e) {
+                sc=new Scanner(System.in);
                 System.out.println("¡Cuidado! Solo puedes insertar números.");
             }
         } while (valid == false);
