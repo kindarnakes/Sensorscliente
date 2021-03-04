@@ -1,6 +1,8 @@
 package Project.GUI;
 
 
+import Project.Model.ClientType;
+
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -61,7 +63,7 @@ public class GUI {
         ObjectOutputStream salida = null;
         String ipServidor = "localhost";
         boolean valid = false;
-
+        String yesorno="";
         int id_chamber = -1;
         int n_sensor = -1;
         int v_temperatura = 0;
@@ -86,6 +88,19 @@ public class GUI {
                 System.out.println("Introduce el valor de Sensor");
                 v_temperatura = sc.nextInt();
                 valid = true;
+
+
+                do{
+                    System.out.println("¿Quieres cambiar otra vez el valor del sensor?");
+                    System.out.println("----------------------------------------");
+                    System.out.println("Y para cambiar el valor del sensor");
+                    System.out.println("Cualquier otra letra/numero para no cambiar el valor del sensor");
+                    yesorno=sc.next();
+
+
+                }while(yesorno=="y");
+
+
             } catch (Exception e) {
                 System.out.println("¡Cuidado! Solo puedes insertar números.");
             }
@@ -109,6 +124,7 @@ public class GUI {
         }
 
         try {
+            salida.writeObject(ClientType.Temperatura);
             salida.writeInt(id_chamber);
             salida.writeInt(n_sensor);
             salida.writeInt(v_temperatura);
