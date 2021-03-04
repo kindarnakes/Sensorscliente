@@ -136,10 +136,15 @@ public class GUI {
 
         try {
             salida.writeObject(ClientType.Temperatura);
+            salida.flush();
             salida.writeInt(id_chamber);
+            salida.flush();
             salida.writeInt(n_sensor);
+            salida.flush();
             salida.writeInt(v_temperatura);
+            salida.flush();
             updated = entrada.readBoolean();
+
 
 
             salida.close();
@@ -147,9 +152,10 @@ public class GUI {
             cliente.close();
 
             if (updated) {
-                System.out.println("No se ha podido actualizar correctamente");
-            } else {
                 System.out.println("Se ha actualizado correctamente");
+
+            } else {
+                System.out.println("No se ha podido actualizar correctamente");
             }
         } catch (UnknownHostException excepcion) {
             System.err.println("No encuentro el servidor en la dirección" + ipServidor);
