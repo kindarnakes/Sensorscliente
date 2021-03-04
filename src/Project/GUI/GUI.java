@@ -3,7 +3,9 @@ package Project.GUI;
 
 import Project.Model.ClientType;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.InputMismatchException;
@@ -48,7 +50,7 @@ public class GUI {
                 }
 
             } catch (InputMismatchException e) {
-                sc=new Scanner(System.in);
+                sc = new Scanner(System.in);
                 System.out.println("¡Cuidado! Solo puedes insertar números.");
                 sc.next();
             }
@@ -60,11 +62,12 @@ public class GUI {
     private static void opt1() {
         Scanner sc = new Scanner(System.in);
         Socket cliente = null;
-        BufferedReader entrada = null;
+        ObjectInputStream entrada = null;
         ObjectOutputStream salida = null;
         String ipServidor = "localhost";
         boolean valid = false;
-        String yesorno="";
+        boolean updated = false;
+        String yesorno = "";
         int id_chamber = -1;
         int n_sensor = -1;
         int v_temperatura = 0;
@@ -80,7 +83,8 @@ public class GUI {
                 System.out.println("2.Sensor 2");
                 n_sensor = sc.nextInt();
             } catch (InputMismatchException e) {
-                sc=new Scanner(System.in);
+                sc = new Scanner(System.in);
+                e.printStackTrace();
                 System.out.println("¡Cuidado! Solo puedes insertar números.");
             }
         } while (n_sensor < 0 && n_sensor < 2);
@@ -92,19 +96,20 @@ public class GUI {
                 valid = true;
 
 
-                do{
+                do {
                     System.out.println("¿Quieres cambiar otra vez el valor del sensor?");
                     System.out.println("----------------------------------------");
                     System.out.println("Y para cambiar el valor del sensor");
                     System.out.println("Cualquier otra letra/numero para no cambiar el valor del sensor");
-                    yesorno=sc.next();
+                    yesorno = sc.next();
 
 
-                }while(yesorno=="y");
+                } while (yesorno == "y");
 
 
             } catch (InputMismatchException e) {
-                sc=new Scanner(System.in);
+                sc = new Scanner(System.in);
+                e.printStackTrace();
                 System.out.println("¡Cuidado! Solo puedes insertar números.");
             }
         } while (valid == false);
@@ -116,14 +121,17 @@ public class GUI {
             //asignamos este numero de puerto
             //entrada = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
             // será lo que enviaremos al servidor
-           //salida = new DataOutputStream(cliente.getOutputStream());
+            //salida = new DataOutputStream(cliente.getOutputStream());
             salida = new ObjectOutputStream(cliente.getOutputStream());
             // será lo que nos devuelva el servidor
 
         } catch (UnknownHostException excepcion) {
+            excepcion.printStackTrace();
             System.err.println("El servidor no está levantado");
-        } catch (Exception e) {
+        } catch (IOException e) {
+            e.printStackTrace();
             System.err.println("Error: " + e);
+
         }
 
         try {
@@ -131,10 +139,18 @@ public class GUI {
             salida.writeInt(id_chamber);
             salida.writeInt(n_sensor);
             salida.writeInt(v_temperatura);
+            updated = entrada.readBoolean();
+
 
             salida.close();
             entrada.close();
             cliente.close();
+
+            if (updated) {
+                System.out.println("No se ha podido actualizar correctamente");
+            } else {
+                System.out.println("Se ha actualizado correctamente");
+            }
         } catch (UnknownHostException excepcion) {
             System.err.println("No encuentro el servidor en la dirección" + ipServidor);
         } catch (IOException excepcion) {
