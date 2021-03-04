@@ -1,5 +1,6 @@
 package Project;
 
+import Project.GUI.GUI;
 import Project.Model.Chamber;
 
 import java.io.*;
@@ -9,9 +10,13 @@ import java.net.UnknownHostException;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
+     GUI.startGUI();
 
-     Socket cliente = null;
+    }
+    }
+
+    /* Socket cliente = null;
      BufferedReader entrada = null;
      ObjectOutputStream salida = null;
      String ipServidor = "localhost";
@@ -33,8 +38,8 @@ public class Main {
 
 
      }
+*/
 
 
 
 
-}
