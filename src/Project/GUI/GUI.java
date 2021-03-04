@@ -1,10 +1,7 @@
 package Project.GUI;
 
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.InputMismatchException;
@@ -61,7 +58,7 @@ public class GUI {
         Scanner sc = new Scanner(System.in);
         Socket cliente = null;
         BufferedReader entrada = null;
-        DataOutputStream salida = null;
+        ObjectOutputStream salida = null;
         String ipServidor = "localhost";
         boolean valid = false;
 
@@ -86,6 +83,7 @@ public class GUI {
 
         do {
             try {
+                System.out.println("Introduce el valor de Sensor");
                 v_temperatura = sc.nextInt();
                 valid = true;
             } catch (Exception e) {
@@ -98,9 +96,10 @@ public class GUI {
 
             cliente = new Socket(ipServidor, 2019);
             //asignamos este numero de puerto
-            entrada = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
+            //entrada = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
             // será lo que enviaremos al servidor
-            salida = new DataOutputStream(cliente.getOutputStream());
+           //salida = new DataOutputStream(cliente.getOutputStream());
+            salida = new ObjectOutputStream(cliente.getOutputStream());
             // será lo que nos devuelva el servidor
 
         } catch (UnknownHostException excepcion) {
