@@ -1,6 +1,7 @@
 package Project.GUI;
 
 
+import Project.Model.Chamber;
 import Project.Model.ClientType;
 
 import java.io.IOException;
@@ -27,8 +28,9 @@ public class GUI {
             System.out.println();
             System.out.println("---------------------------MENU-----------------------------");
             System.out.println("1. : Sensor de temperatura");
-            System.out.println("2. : : Sensor de puerta abierta");
-            System.out.println("3. : Sensor de temperatura");
+            System.out.println("2. : Sensor de puerta abierta");
+            System.out.println("3. : Terminal de administración");
+            System.out.println("4. : Salir");
 
             try {
                 System.out.print("Indica una opción a través del dígito que se muestra:");
@@ -42,11 +44,13 @@ public class GUI {
                         opt2();
                         break;
                     case 3:
-                        //opt3();
+                        opt3();
                         break;
-
+                    case 4:
+                        salir = true;
+                        break;
                     default:
-                        System.out.println("Indique un dígito válido entre 1-5");
+                        System.out.println("Indique un dígito válido entre 1-4");
                 }
 
             } catch (InputMismatchException e) {
@@ -261,5 +265,111 @@ public class GUI {
         }
     }
 
+    private static void opt3() {
+        Scanner sc = new Scanner(System.in);
+        boolean salir = false;
+        int opcion;
 
+
+        while (!salir) {
+
+            System.out.println();
+            System.out.println("----------------------MENU ADMINISTRACIÓN--------------------------");
+            System.out.println("1.Ver el estado de los sensores, de la puerta y del motor de una cámara frigorífica.");
+            System.out.println("2.Ingresar una nueva cámara frigorífica. ");
+            System.out.println("3.Salir");
+
+            try {
+                System.out.print("Indica una opción a través del dígito que se muestra:");
+                opcion = sc.nextInt();
+
+                switch (opcion) {
+                    case 1:
+                        opta1();
+                        break;
+                    case 2:
+                        //opta2();
+                        break;
+                    case 3:
+                        salir = true;
+                        break;
+
+                    default:
+                        System.out.println("Indique un dígito válido entre 1-5");
+                }
+
+            } catch (InputMismatchException e) {
+                sc = new Scanner(System.in);
+                System.out.println("¡Cuidado! Solo puedes insertar números.");
+                sc.next();
+            }
+
+        }
+
+    }
+
+    private static void opta1(){
+        Scanner sc = new Scanner(System.in);
+        Socket cliente = null;
+        ObjectInputStream entrada = null;
+        ObjectOutputStream salida = null;
+        String ipServidor = "localhost";
+        int id_chamber = -1;
+        int option = 1;
+        Chamber c;
+
+        while (id_chamber <= 0) {
+            System.out.println("Introduce la Id del Chamber");
+            id_chamber = sc.nextInt();
+        }
+
+        try {
+
+            cliente = new Socket(ipServidor, 55000);
+            //asignamos este numero de puerto
+            //entrada = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
+            // será lo que enviaremos al servidor
+            //salida = new DataOutputStream(cliente.getOutputStream());
+            salida = new ObjectOutputStream(cliente.getOutputStream());
+            entrada = new ObjectInputStream(cliente.getInputStream());
+            // será lo que nos devuelva el servidor
+
+        } catch (UnknownHostException excepcion) {
+            excepcion.printStackTrace();
+            System.err.println("El servidor no está levantado");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Error: " + e);
+
+        }
+
+        try {
+            salida.writeObject(ClientType.Administracion);
+            salida.flush();
+            salida.writeInt(option);
+            salida.flush();
+            salida.writeInt(id_chamber);
+            salida.flush();
+
+            Object o = entrada.readObject();
+            if(o instanceof Chamber) {
+                System.out.println(o.toString());
+            }
+
+            salida.close();
+            entrada.close();
+            cliente.close();
+
+
+        } catch (UnknownHostException excepcion) {
+            System.err.println("No encuentro el servidor en la dirección" + ipServidor);
+        } catch (IOException excepcion) {
+            System.err.println("Error de entrada/salida");
+            excepcion.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("Error: " + e);
+        }
+
+
+    }
 }
