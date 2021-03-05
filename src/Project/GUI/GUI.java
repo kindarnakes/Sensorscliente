@@ -316,6 +316,7 @@ public class GUI {
         String ipServidor = "localhost";
         int id_chamber = -1;
         int option = 1;
+        boolean respuesta;
         Chamber c;
 
         while (id_chamber <= 0) {
@@ -348,14 +349,18 @@ public class GUI {
             salida.flush();
             salida.writeInt(option);
             salida.flush();
-            salida.writeInt(id_chamber);
-            salida.flush();
+            respuesta = entrada.readBoolean();
+            if (respuesta==true) {
+                salida.writeInt(id_chamber);
+                salida.flush();
 
-            Object o = entrada.readObject();
-            if(o instanceof Chamber) {
-                System.out.println(o.toString());
+                Object o = entrada.readObject();
+                if (o instanceof Chamber) {
+                    System.out.println(o.toString());
+                }
+            } else {
+                System.out.println("Error, no se pudo acceder correctamente");
             }
-
             salida.close();
             entrada.close();
             cliente.close();
