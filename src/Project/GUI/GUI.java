@@ -151,7 +151,6 @@ public class GUI {
             updated = entrada.readBoolean();
 
 
-
             salida.close();
             entrada.close();
             cliente.close();
@@ -192,7 +191,7 @@ public class GUI {
         do {
             try {
                 System.out.println("Introduce el valor de Sensor 'True' o 'False': ");
-                v_puerta= sc.nextBoolean();
+                v_puerta = sc.nextBoolean();
                 valid = true;
 
 
@@ -244,7 +243,6 @@ public class GUI {
             updated = entrada.readBoolean();
 
 
-
             salida.close();
             entrada.close();
             cliente.close();
@@ -288,7 +286,7 @@ public class GUI {
                         opta1();
                         break;
                     case 2:
-                        //opta2();
+                        opta2();
                         break;
                     case 3:
                         salir = true;
@@ -308,7 +306,87 @@ public class GUI {
 
     }
 
-    private static void opta1(){
+    private static void opta2() {
+
+        Scanner sc = new Scanner(System.in);
+        Socket cliente = null;
+        ObjectInputStream entrada = null;
+        ObjectOutputStream salida = null;
+        String ipServidor = "localhost";
+        int option = 2;
+        boolean respuesta;
+        Chamber c = new Chamber();
+
+
+        System.out.println("Introduce la id de la cámara");
+        int id=sc.nextInt();
+        System.out.println("Introduce la temperatura máxima");
+        int max=sc.nextInt();
+        System.out.println("Introduce la tempertura del sensor 1");
+        int sensor1=sc.nextInt();
+        System.out.println("Introduce la tempertura del sensor 2");
+        int sensor2=sc.nextInt();
+        c.setMotor(false);
+        c.setId(id);
+        c.setPuerta(false);
+        c.setMaxtemp(max);
+        c.setSensor1(sensor1);
+        c.setSensor2(sensor2);
+
+
+
+
+
+        try {
+            cliente = new Socket(ipServidor, 55000);
+            salida = new ObjectOutputStream(cliente.getOutputStream());
+            entrada = new ObjectInputStream(cliente.getInputStream());
+            // será lo que nos devuelva el servidor
+
+        } catch (UnknownHostException excepcion) {
+            excepcion.printStackTrace();
+            System.err.println("El servidor no está levantado");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Error: " + e);
+
+        }
+
+        try {
+            salida.writeObject(ClientType.Administracion);
+            salida.flush();
+            salida.writeInt(option);
+            salida.flush();
+            salida.writeObject(c);
+            salida.flush();
+            respuesta = entrada.readBoolean();
+
+
+            if (respuesta == true) {
+                System.out.println("Cámara creada");
+
+            } else {
+                System.out.println("Error, no se pudo crear correctamente");
+            }
+
+            salida.close();
+            entrada.close();
+            cliente.close();
+
+
+        } catch (UnknownHostException excepcion) {
+            System.err.println("No encuentro el servidor en la dirección" + ipServidor);
+        } catch (IOException excepcion) {
+            System.err.println("Error de entrada/salida");
+            excepcion.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("Error: " + e);
+        }
+
+
+    }
+
+    private static void opta1() {
         Scanner sc = new Scanner(System.in);
         Socket cliente = null;
         ObjectInputStream entrada = null;
@@ -350,7 +428,7 @@ public class GUI {
             salida.writeInt(option);
             salida.flush();
             respuesta = entrada.readBoolean();
-            if (respuesta==true) {
+            if (respuesta == true) {
                 salida.writeInt(id_chamber);
                 salida.flush();
 
@@ -377,4 +455,5 @@ public class GUI {
 
 
     }
+
 }
